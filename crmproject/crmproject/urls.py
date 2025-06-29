@@ -25,6 +25,7 @@ from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView, Spe
 BASE_API_V1_PREFIX = 'api/v1'
 
 urlpatterns = [
+    path(f'{BASE_API_V1_PREFIX}/company/', include("company.urls")),
     path(f'{BASE_API_V1_PREFIX}/users/', include("users.urls")),
     path(f'{BASE_API_V1_PREFIX}/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path(f'{BASE_API_V1_PREFIX}/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import CompanySerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
+from .models import Company
+from django.shortcuts import get_object_or_404
 
 
 @extend_schema(
@@ -33,6 +35,13 @@ class CreateCompanyView(APIView):
     ]
 )
 class DeleteCompanyView(APIView):
-    permission_classes = []
     def delete(self, request, pk=None):
-        print(pk)
+        company = get_object_or_404(Company, pk=pk)
+        user = request.user
+        if not user.is_company_owner:
+            return Response('Только владелец может удалить компанию', status=status.HTTP_400_BAD_REQUEST)
+        if user.company != company:
+            return Response('Вы не можете удалить чужую компанию', status=status.HTTP_400_BAD_REQUEST)
+        title = company.title
+        company.delete()
+        return Response(f"Компания '{title}' успешно удалена", status=status.HTTP_200_OK)

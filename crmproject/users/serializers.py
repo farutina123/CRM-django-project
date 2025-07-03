@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import User
-from django.contrib.auth.models import Permission
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -39,7 +38,6 @@ class AttachUserToCompanySerializer(serializers.Serializer):
 
         try:
             user = User.objects.get(email=email)
-            print(user)
         except User.DoesNotExist:
             raise serializers.ValidationError("Пользователь с таким email не найден.")
 

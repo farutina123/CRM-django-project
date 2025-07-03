@@ -3,18 +3,17 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import CompanySerializer
 from drf_spectacular.utils import extend_schema
-from .models import Company
 
 
 @extend_schema(
     tags=['company'],
+    description="Создание компании доступно только авторизованным пользователям",
     request=CompanySerializer
 )
 class CreateCompanyView(APIView):
     def post(self, request):
         serializer = CompanySerializer(data=request.data)
         user = request.user
-        print(user.is_company_owner)
         if user.company != None:
             return Response('пользователь уже привязан к компании', status=status.HTTP_400_BAD_REQUEST)
         if not serializer.is_valid():

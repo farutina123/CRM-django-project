@@ -15,12 +15,12 @@ class CreateCompanyView(APIView):
         serializer = CompanySerializer(data=request.data)
         user = request.user
         print(user.is_company_owner)
-        if user.company_id != None:
+        if user.company != None:
             return Response('пользователь уже привязан к компании', status=status.HTTP_400_BAD_REQUEST)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         company = serializer.save()
-        user.company_id = company
+        user.company = company
         user.is_company_owner = True
         user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

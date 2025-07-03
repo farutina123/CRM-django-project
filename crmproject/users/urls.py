@@ -1,7 +1,8 @@
 from django.urls import path
-from . import views
+from .views import UserRegistrationView, AttachUserToCompanyView
 
 urlpatterns = [
-    path("register/", views.UserRegistrationView.as_view(), name="register")]
+    path("register/", UserRegistrationView.as_view(), name="register"),
+    path("attach-user-to-company/", AttachUserToCompanyView.as_view(), name="attach_user")]
 
 

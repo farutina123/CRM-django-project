@@ -28,3 +28,20 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
+
+class AttachUserToCompanySerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate(self, data):
+        email = data.get("email")
+        if not email:
+            raise serializers.ValidationError("Необходимо передать email.")
+
+        try:
+            user = User.objects.get(email=email)
+            print(user)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Пользователь с таким email не найден.")
+
+        data['user'] = user
+        return data

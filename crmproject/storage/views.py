@@ -1,8 +1,10 @@
+from django.shortcuts import get_object_or_404
+from drf_spectacular.types import OpenApiTypes
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import StorageSerializer
-from drf_spectacular.utils import extend_schema
+from .serializers import StorageSerializer, UpdateStorageSerializer
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from .models import Storage
 from django.db import IntegrityError
 
@@ -31,3 +33,24 @@ class CreateStorageView(APIView):
             return Response('У данной компании уже есть склад', status=500)
         storage.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@extend_schema(
+    tags=['storage'],
+    parameters=[
+        OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID'),
+    ],
+    request=UpdateStorageSerializer
+)
+class UpdateStorageView(APIView):
+    def put(self, request, pk=None):
+        user = request.user
+        storage = get_object_or_404(Storage, pk=pk)
+        if not user.is_company_owner:
+            return Response('Вы не владелец компании', status=status.HTTP_400_BAD_REQUEST)
+        if user.company == None:
+            return Response('Вы не привязаны к компании', status=status.HTTP_400_BAD_REQUEST)
+        serializer = UpdateStorageSerializer(data=request.data, instance=storage)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)

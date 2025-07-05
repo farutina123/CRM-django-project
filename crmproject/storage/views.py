@@ -54,3 +54,37 @@ class UpdateStorageView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@extend_schema(
+    tags=['storage'],
+    parameters=[
+        OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID'),
+    ]
+)
+class DeleteStorageView(APIView):
+    def delete(self, request, pk=None):
+        storage = get_object_or_404(Storage, pk=pk)
+        user = request.user
+        if not user.is_company_owner:
+            return Response('Только владелец может удалить склад', status=status.HTTP_400_BAD_REQUEST)
+        if user.company != storage.company:
+            return Response('Вы не можете удалить чужой склад', status=status.HTTP_400_BAD_REQUEST)
+        address = storage.address
+        storage.delete()
+        return Response(f"Склад по данному адресу '{address}' успешно удален", status=status.HTTP_200_OK)
+
+
+@extend_schema(
+    tags=['storage'],
+    parameters=[
+        OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID'),
+    ]
+)
+class GetStorageView(APIView):
+    def get(self, request, pk=None):
+        user = request.user
+        storage = get_object_or_404(Storage, pk=pk)
+        if user.company != storage.company:
+            return Response('Вы не можете посмотреть данные чужой компании', status=status.HTTP_400_BAD_REQUEST)
+        return Response(StorageSerializer(storage).data, status=status.HTTP_200_OK)

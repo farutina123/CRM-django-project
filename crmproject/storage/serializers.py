@@ -3,10 +3,11 @@ from .models import Storage
 
 
 class StorageSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(label='ID', read_only=True)
     class Meta:
         model = Storage
-        fields = ['id', 'address']
+        fields = ["id",
+            "address"
+        ]
 
 
 class UpdateStorageSerializer(serializers.Serializer):

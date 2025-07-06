@@ -29,7 +29,7 @@ class CreateCompanyView(APIView):
 
 @extend_schema(
     tags=['company'],
-    description="Удаление компании доступно только авторизованным пользователям",
+    description="Удаление компании доступно только владельцу компании",
     parameters=[
         OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID')
     ]
@@ -49,7 +49,7 @@ class DeleteCompanyView(APIView):
 
 @extend_schema(
     tags=['company'],
-    description="Обновление компании доступно только авторизованным пользователям",
+    description="Обновление компании доступно только владельцу компании",
     parameters=[
         OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID'),
     ],
@@ -73,7 +73,8 @@ class UpdateCompanyView(APIView):
     tags=['company'],
     parameters=[
         OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID'),
-    ]
+    ],
+    description="Просмотр информации по компании доступен, всем работникам, привязанным к данной компании"
 )
 class GetCompanyView(APIView):
     def get(self, request, pk=None):

@@ -32,7 +32,8 @@ class CreateStorageView(APIView):
         except IntegrityError:
             return Response('У данной компании уже есть склад', status=500)
         storage.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        response_serializer = StorageSerializer(instance=storage)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
 @extend_schema(
@@ -40,7 +41,8 @@ class CreateStorageView(APIView):
     parameters=[
         OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID'),
     ],
-    request=UpdateStorageSerializer
+    request=UpdateStorageSerializer,
+    description="Обновление информации о складе доступно только владельцу компании"
 )
 class UpdateStorageView(APIView):
     def put(self, request, pk=None):
@@ -60,7 +62,8 @@ class UpdateStorageView(APIView):
     tags=['storage'],
     parameters=[
         OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID'),
-    ]
+    ],
+    description="Удвление информации о складе доступно только владельцу компании"
 )
 class DeleteStorageView(APIView):
     def delete(self, request, pk=None):
@@ -79,7 +82,8 @@ class DeleteStorageView(APIView):
     tags=['storage'],
     parameters=[
         OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID'),
-    ]
+    ],
+    description="Просматривать информацию о складе может любой работник, прикрепленный к компании"
 )
 class GetStorageView(APIView):
     def get(self, request, pk=None):

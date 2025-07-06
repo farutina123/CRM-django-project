@@ -3,7 +3,6 @@ from .models import Company
 
 
 class CompanySerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(label='ID', read_only=True)
     class Meta:
         model = Company
         fields = '__all__'

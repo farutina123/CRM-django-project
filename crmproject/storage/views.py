@@ -50,8 +50,8 @@ class UpdateStorageView(APIView):
         storage = get_object_or_404(Storage, pk=pk)
         if not user.is_company_owner:
             return Response('Вы не владелец компании', status=status.HTTP_400_BAD_REQUEST)
-        if user.company == None:
-            return Response('Вы не привязаны к компании', status=status.HTTP_400_BAD_REQUEST)
+        if user.company != storage.company:
+            return Response('Вы не привязаны к данной компании', status=status.HTTP_400_BAD_REQUEST)
         serializer = UpdateStorageSerializer(data=request.data, instance=storage)
         serializer.is_valid(raise_exception=True)
         serializer.save()

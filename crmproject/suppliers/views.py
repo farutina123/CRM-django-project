@@ -1,12 +1,10 @@
 from django.shortcuts import get_object_or_404
-from django.views import generic
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from .models import Supplier
-from django.db import IntegrityError
 from .serializers import SupplierSerializer, SupplierResronseSerializer, UpdateSupplierSerializer
 
 

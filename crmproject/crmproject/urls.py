@@ -26,6 +26,7 @@ BASE_API_V1_PREFIX = 'api/v1'
 
 urlpatterns = [
     path(f'{BASE_API_V1_PREFIX}/storage/', include("storage.urls")),
+    path(f'{BASE_API_V1_PREFIX}/supply/', include("supply.urls")),
     path(f'{BASE_API_V1_PREFIX}/product/', include("product.urls")),
     path(f'{BASE_API_V1_PREFIX}/supplier/', include("suppliers.urls")),
     path(f'{BASE_API_V1_PREFIX}/company/', include("company.urls")),

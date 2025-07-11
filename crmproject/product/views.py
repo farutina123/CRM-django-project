@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import ProductSerializer, UpdateProductSerializer, ResponseProductSerializer
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRequest
 from .models import Product
 from storage.models import Storage
 from django.db import IntegrityError
@@ -13,7 +13,24 @@ from django.db import IntegrityError
 @extend_schema(
     tags=['product'],
     description="Доступно всем сотрудникам компании",
-    request=ProductSerializer
+    request=OpenApiRequest(
+        request={
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "purchase_price": {
+                    "type": "string",
+                    "example": "1500.00"
+                },
+                "sale_price": {
+                    "type": "string",
+                    "example": "3120.99"
+                }
+            }
+        }
+    )
 )
 class CreateProductView(APIView):
     def post(self, request):

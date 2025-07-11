@@ -26,6 +26,7 @@ class SupplyCreateSerializer(serializers.Serializer):
 
 
 class SupplyGetSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
     supplier_id = serializers.IntegerField(
         min_value=1,
     )

@@ -12,6 +12,6 @@ class Product(models.Model):
 
 
 class SupplyProduct(models.Model):
-    supply = models.ForeignKey(Supply, on_delete=models.CASCADE, related_name='supply')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
+    supply = models.ForeignKey(Supply, on_delete=models.CASCADE, related_name='products')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='supplyes')
     quantity = models.IntegerField()

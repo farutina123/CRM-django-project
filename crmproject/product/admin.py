@@ -9,4 +9,4 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(models.SupplyProduct)
 class SupplyProductAdmin(admin.ModelAdmin):
-    list_display = ["quantity"]
+    list_display = ["id", "product", "supply", "quantity"]

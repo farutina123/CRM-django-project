@@ -8,7 +8,8 @@ from .models import Supply
 from product.models import SupplyProduct
 from suppliers.models import Supplier
 from storage.models import Storage
-from .serializers import SupplyCreateSerializer
+from product.models import Product, SupplyProduct
+from .serializers import SupplyCreateSerializer, SupplyGetSerializer
 
 
 @extend_schema(
@@ -30,12 +31,37 @@ class CreateSupplyView(APIView):
         storage = get_object_or_404(Storage, pk=serializer.data['storage_id'])
         if user.company != storage.company:
             return Response('У вас нет склада с таким ID')
+        product_list = serializer.data['products']
+        for product_item in product_list:
+            product = get_object_or_404(Product, pk=product_item['product_id'])
+            if product.storage != storage:
+                return Response(f'Товар {product_item['product_id']} не привязан к данному складу')
         supply = Supply.objects.create(
-            supplier=serializer.data['supplier_id'],
-        )
-        supply_product = SupplyProduct.objects.create(
-
+            supplier=supplier,
         )
         supply.save()
-        response_serializer = SupplierResronseSerializer(instance=supplier)
-        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        for product_item in product_list:
+            product = get_object_or_404(Product, pk=product_item['product_id'])
+            product.quantity += product_item['quantity']
+            product.save()
+            supply_product = SupplyProduct.objects.create(
+                supply=supply,
+                product=product,
+                quantity=product_item['quantity']
+            )
+            supply_product.save()
+        supply_id = supply.id
+        return Response({"message": "Поставка создана!", "id": supply_id}, status=status.HTTP_201_CREATED)
+
+
+@extend_schema(
+    tags=['supply'],
+    description="Доступно всем сотрудникам компании"
+)
+class ListGetSupplyView(APIView):
+    def get(self, request):
+        user = request.user
+        supply = Supply.objects.filter(supplier__company=user.company)
+        return Response(SupplyGetSerializer(supply, many=True).data, status=status.HTTP_200_OK)
+
+

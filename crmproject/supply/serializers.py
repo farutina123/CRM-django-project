@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from .models import Supply
 
 class SupplyCreateProductSerializer(serializers.Serializer):
     product_id = serializers.IntegerField(
@@ -22,4 +22,15 @@ class SupplyCreateSerializer(serializers.Serializer):
     products = SupplyCreateProductSerializer(
         many=True,
         help_text='Список товаров в поставке'
+    )
+
+
+class SupplyGetSerializer(serializers.Serializer):
+    supplier_id = serializers.IntegerField(
+        min_value=1,
+    )
+    delivery_date = serializers.DateField()
+
+    products = SupplyCreateProductSerializer(
+        many=True
     )

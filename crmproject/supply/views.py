@@ -9,7 +9,7 @@ from product.models import SupplyProduct
 from suppliers.models import Supplier
 from storage.models import Storage
 from product.models import Product, SupplyProduct
-from .serializers import SupplyCreateSerializer, SupplyGetSerializer
+from supply.serializers import SupplyCreateSerializer, SupplyGetSerializer
 
 
 @extend_schema(

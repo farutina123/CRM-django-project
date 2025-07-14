@@ -1,13 +1,16 @@
 from django.contrib import admin
-from . import models
+from .models import ProductSale, Sale
 
 
-@admin.register(models.Sale)
+
+class ProductSaleInline(admin.TabularInline):
+    model = ProductSale
+
+
 class SaleAdmin(admin.ModelAdmin):
-    list_display = ["id", "buyer_name", "company", "sale_date"]
+    inlines = [ProductSaleInline,]
+    class Meta:
+        model = Sale
 
 
-@admin.register(models.ProductSale)
-class ProductSaleAdmin(admin.ModelAdmin):
-    list_display = ["id", "sale", "product", "quantity"]
-
+admin.site.register(Sale, SaleAdmin)

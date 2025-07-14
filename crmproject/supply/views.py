@@ -65,3 +65,28 @@ class ListGetSupplyView(APIView):
         return Response(SupplyGetSerializer(supply, many=True).data, status=status.HTTP_200_OK)
 
 
+@extend_schema(
+    tags=['supply'],
+    parameters=[
+        OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID'),
+    ],
+    description="Доступно всем сотрудникам компании"
+)
+class GetSupplyInvoiceView(APIView):
+    def get(self, request, pk=None):
+        user = request.user
+        supply = get_object_or_404(Supply, pk=pk)
+        if user.company != supply.supplier.company:
+            return Response('Вы не можете посмотреть данные чужой компании', status=status.HTTP_400_BAD_REQUEST)
+        invoice = {}
+        product_invoice = {}
+        product_list = SupplyProduct.objects.filter(supply_id=pk)
+        for item in product_list:
+            product_invoice[f'{item.product.title}'] = item.quantity
+        invoice['Поставщик'] = supply.supplier.title
+        invoice['Товары'] = product_invoice
+        invoice['Дата поставки'] = supply.delivery_date
+        invoice['Товар принял'] = user.username
+        return Response(invoice, status=status.HTTP_200_OK)
+
+

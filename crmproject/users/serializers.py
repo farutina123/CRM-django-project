@@ -43,3 +43,8 @@ class AttachUserToCompanySerializer(serializers.Serializer):
 
         data['user'] = user
         return data
+
+
+class UserListSerializer(serializers.Serializer):
+    username = serializers.CharField(min_length=3)
+    email = serializers.EmailField(required=True)

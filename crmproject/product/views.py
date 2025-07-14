@@ -60,7 +60,24 @@ class CreateProductView(APIView):
     parameters=[
         OpenApiParameter(name='id', type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description='ID'),
     ],
-    request=UpdateProductSerializer,
+    request=OpenApiRequest(
+        request={
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "purchase_price": {
+                    "type": "string",
+                    "example": "1500.00"
+                },
+                "sale_price": {
+                    "type": "string",
+                    "example": "3120.99"
+                }
+            }
+        }
+    ),
     description="Доступно всем сотрудникам компании"
 )
 class UpdateProductView(APIView):

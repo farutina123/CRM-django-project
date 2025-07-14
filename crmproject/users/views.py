@@ -1,7 +1,8 @@
+from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserSerializer, AttachUserToCompanySerializer
+from .serializers import UserSerializer, AttachUserToCompanySerializer, UserListSerializer
 from .models import User
 from drf_spectacular.utils import extend_schema
 @extend_schema(
@@ -35,3 +36,18 @@ class AttachUserToCompanyView(APIView):
         add_user.company = user.company
         add_user.save()
         return Response(f"пользователь {add_user.username} добавлен в компанию", status=200)
+
+
+@extend_schema(
+    tags=['user'],
+    description="Просматривать список сотрудников доступно только владельцу компании"
+)
+class ListGetUserView(APIView):
+    def get(self, request):
+        user = request.user
+        if not user.is_company_owner:
+            return Response(f"Вы не владелец компании", status=400)
+        user_list = User.objects.filter(company=user.company)
+        return Response(UserListSerializer(user_list, many=True).data, status=status.HTTP_200_OK)
+
+

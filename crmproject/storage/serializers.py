@@ -2,11 +2,24 @@ from rest_framework import serializers
 from .models import Storage
 
 
+
+class StorageProductSerializer(serializers.Serializer):
+    title = serializers.CharField(
+        min_length=3
+    )
+    quantity = serializers.IntegerField(
+        min_value=1,
+        help_text="Количество товара"
+    )
+
+
 class StorageSerializer(serializers.ModelSerializer):
+    product = StorageProductSerializer(many=True)
     class Meta:
         model = Storage
         fields = ["id",
-            "address"
+            "address",
+            "product"
         ]
 
 

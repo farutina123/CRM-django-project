@@ -8,7 +8,7 @@ class Product(models.Model):
     purchase_price = models.DecimalField(max_digits=6, decimal_places=2)
     sale_price = models.DecimalField(max_digits=6, decimal_places=2)
     quantity = models.IntegerField(default=0)
-    storage = models.ForeignKey(Storage, on_delete=models.CASCADE)
+    storage = models.ForeignKey(Storage, on_delete=models.CASCADE, related_name='product')
 
 
 class SupplyProduct(models.Model):
